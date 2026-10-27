@@ -33,8 +33,14 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/health",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "health"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
             },
             "description": "Verifies that the application server is running and checks PostgreSQL database connectivity and latency."
           },
@@ -86,8 +92,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Creates a new primary account with a system-generated ID and an initial balance of zero."
           },
@@ -131,8 +143,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Creates a secondary account to test cross-account reference isolation."
           },
@@ -172,8 +190,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that account creation is rejected when name is omitted."
           },
@@ -213,8 +237,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that whitespace-only names are rejected."
           },
@@ -254,8 +284,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Ensures clients cannot override or set the initial balance."
           },
@@ -296,8 +332,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Ensures clients cannot provide system-controlled creation timestamps."
           },
@@ -338,8 +380,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that newly created accounts always have a balance of exactly 0.00."
           },
@@ -384,8 +432,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Credits the account with 500.00 and increases its balance atomically."
           },
@@ -428,8 +484,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Debits 150.00 from an account that has sufficient balance."
           },
@@ -471,8 +535,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Rejects a debit transaction when the account balance is less than the requested amount."
           },
@@ -512,8 +584,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Ensures transaction amounts must be strictly greater than zero."
           },
@@ -553,8 +633,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Ensures negative amounts are rejected."
           },
@@ -594,8 +682,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Ensures only 'credit' and 'debit' transaction types are accepted."
           },
@@ -636,8 +732,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/00000000-0000-0000-0000-000000000000/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "00000000-0000-0000-0000-000000000000", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "00000000-0000-0000-0000-000000000000",
+                "transactions"
+              ]
             },
             "description": "Verifies that submitting a transaction for an account that does not exist returns 404."
           },
@@ -682,8 +786,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "First submission of reference REF-POSTMAN-IDEMP-01. Expected to succeed."
           },
@@ -723,8 +835,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Resubmission of the exact same reference on the same account. Must be rejected with 409 Conflict without altering balance."
           },
@@ -766,8 +886,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{secondaryAccountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{secondaryAccountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{secondaryAccountId}}",
+                "transactions"
+              ]
             },
             "description": "Submits REF-POSTMAN-IDEMP-01 to a DIFFERENT account. Must succeed because reference uniqueness is scoped per account."
           },
@@ -808,8 +936,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "First debit with reference REF-POSTMAN-DEB-01."
           },
@@ -850,8 +986,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Repeated submission of debit request. Must return 409 Conflict and not subtract from balance a second time."
           },
@@ -887,8 +1031,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "balance"
+              ]
             },
             "description": "Verifies that an account begins with an exact zero balance."
           },
@@ -929,8 +1081,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Credits the account with 500.00."
           },
@@ -956,8 +1116,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "balance"
+              ]
             },
             "description": "Verifies that the balance reflects 500.00 after credit."
           },
@@ -997,8 +1165,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Debits 150.00 from the account."
           },
@@ -1024,8 +1200,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "balance"
+              ]
             },
             "description": "Verifies that the balance reflects 350.00 after debit."
           },
@@ -1057,8 +1241,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/00000000-0000-0000-0000-000000000000/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "00000000-0000-0000-0000-000000000000", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "00000000-0000-0000-0000-000000000000",
+                "balance"
+              ]
             },
             "description": "Verifies that requesting balance for a nonexistent account returns 404."
           },
@@ -1094,8 +1286,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Retrieves the complete transaction history for an account using default pagination (page 1, limit 10)."
           },
@@ -1130,8 +1330,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=credit",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "type",
@@ -1170,8 +1378,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=debit",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "type",
@@ -1210,8 +1426,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=1&limit=2",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1254,8 +1478,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=2&limit=2",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1296,8 +1528,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=999&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1339,8 +1579,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=0",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -1377,8 +1625,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=deposit",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "type",
@@ -1415,8 +1671,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Confirms that transactions are returned in latest-first descending order."
           },
@@ -1447,7 +1711,7 @@
       ]
     },
     {
-      "name": "Phase 7 — Immutability and Integrity",
+      "name": "Immutability and Integrity",
       "item": [
         {
           "name": "1. Reject PUT on Transactions Collection (405)",
@@ -1465,8 +1729,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that modifying transactions collection via PUT is strictly prohibited with 405 Method Not Allowed."
           },
@@ -1502,8 +1774,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that deleting transactions via DELETE is strictly prohibited with 405 Method Not Allowed."
           },
@@ -1534,8 +1814,17 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions/00000000-0000-0000-0000-000000000001",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions", "00000000-0000-0000-0000-000000000001"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions",
+                "00000000-0000-0000-0000-000000000001"
+              ]
             },
             "description": "Verifies that deleting a specific transaction is rejected with 405."
           },
@@ -1575,8 +1864,17 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions/00000000-0000-0000-0000-000000000001",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions", "00000000-0000-0000-0000-000000000001"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions",
+                "00000000-0000-0000-0000-000000000001"
+              ]
             },
             "description": "Verifies that modifying transaction details via PATCH is rejected with 405."
           },
@@ -1603,7 +1901,7 @@
       ]
     },
     {
-      "name": "Phase 8 — Comprehensive Validation",
+      "name": "Comprehensive Validation",
       "item": [
         {
           "name": "1. Reject Missing Name in Account Creation (400)",
@@ -1621,8 +1919,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that account creation without 'name' is rejected with 400 Bad Request."
           },
@@ -1663,8 +1967,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that supplying client-controlled 'balance' is rejected with 400."
           },
@@ -1705,8 +2015,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that whitespace-only account name is rejected with 400."
           },
@@ -1747,8 +2063,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that extra/unrecognized fields in account creation payload are strictly rejected."
           },
@@ -1780,8 +2102,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/12345-invalid/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "12345-invalid", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "12345-invalid",
+                "balance"
+              ]
             },
             "description": "Verifies that non-UUID path parameters return 400 Bad Request."
           },
@@ -1822,8 +2152,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that negative transaction amounts are rejected with 400."
           },
@@ -1863,8 +2201,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that amounts with more than 2 decimal places are rejected with 400."
           },
@@ -1905,8 +2251,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that amounts exceeding 1,000,000,000 are rejected with 400."
           },
@@ -1947,8 +2301,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that transaction types other than 'credit' or 'debit' are rejected with 400."
           },
@@ -1989,8 +2351,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that client-supplied transaction ID is rejected with 400."
           },
@@ -2022,8 +2392,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=0&limit=101",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -2064,8 +2442,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?unrecognized=true",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "unrecognized",
@@ -2098,7 +2484,7 @@
       ]
     },
     {
-      "name": "Phase 9 — Centralized Error Handling",
+      "name": "Centralized Error Handling",
       "item": [
         {
           "name": "1. Malformed JSON Body (400 INVALID_JSON)",
@@ -2116,8 +2502,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts"
+              ]
             },
             "description": "Verifies that malformed JSON request bodies produce standardized 400 Bad Request with code 'INVALID_JSON'."
           },
@@ -2149,8 +2541,14 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/nonexistent-route",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "nonexistent-route"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "nonexistent-route"
+              ]
             },
             "description": "Verifies that nonexistent routes return 404 Not Found with code 'NOT_FOUND'."
           },
@@ -2181,8 +2579,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/00000000-0000-0000-0000-000000000000/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "00000000-0000-0000-0000-000000000000", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "00000000-0000-0000-0000-000000000000",
+                "balance"
+              ]
             },
             "description": "Verifies that requesting a nonexistent account balance returns 404 with code 'ACCOUNT_NOT_FOUND'."
           },
@@ -2223,8 +2629,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that submitting a duplicate reference returns 409 Conflict with code 'DUPLICATE_TRANSACTION_REFERENCE'."
           },
@@ -2265,8 +2679,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that debits exceeding account balance return 422 with code 'INSUFFICIENT_BALANCE'."
           },
@@ -2294,7 +2716,7 @@
       ]
     },
     {
-      "name": "Phase 10 — Money Transfer API",
+      "name": "Money Transfer API",
       "item": [
         {
           "name": "1. Successful Money Transfer (201 Created)",
@@ -2312,8 +2734,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Executes an atomic money transfer between source and destination accounts."
           },
@@ -2356,8 +2784,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that transfer exceeding source funds is rejected with 422."
           },
@@ -2398,8 +2832,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that transfer to nonexistent destination returns 404 ACCOUNT_NOT_FOUND."
           },
@@ -2440,8 +2880,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that self-transfers (source === destination) are rejected with 400."
           },
@@ -2482,8 +2928,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that duplicate transfer reference IDs return 409 Conflict."
           },
@@ -2514,8 +2966,14 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that transfer records are immutable and deleting is rejected with 405 Method Not Allowed."
           },
@@ -2535,14 +2993,14 @@
                   "});"
                 ],
                 "type": "text/javascript"
-              } 
+              }
             }
           ]
         }
       ]
     },
     {
-      "name": "Phase 11 — Audit Verification and Reliability",
+      "name": "Audit Verification and Reliability",
       "item": [
         {
           "name": "1. Audit Reconciliation - Stored Balance Check",
@@ -2551,8 +3009,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/balance",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "balance"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "balance"
+              ]
             },
             "description": "Fetches current account balance to verify consistency against ledger transactions."
           },
@@ -2569,7 +3035,7 @@
                   "pm.test(\"Response contains valid decimal balance\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData).to.have.property(\"balance\");",
-                  "    pm.expect(/^\u005cd+\u005c.\u005cd{2}$/.test(jsonData.balance)).to.be.true;",
+                  "    pm.expect(/^\\d+\\.\\d{2}$/.test(jsonData.balance)).to.be.true;",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2593,8 +3059,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that transaction records cannot be modified via HTTP PUT and returns 405 Method Not Allowed."
           },
@@ -2625,8 +3099,16 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Verifies that transaction records cannot be deleted via HTTP DELETE and returns 405 Method Not Allowed."
           },
@@ -2666,8 +3148,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/transfers",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "transfers"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "transfers"
+              ]
             },
             "description": "Verifies that money transfer records cannot be modified via HTTP PUT and returns 405 Method Not Allowed."
           },
@@ -2707,8 +3195,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Executes initial financial transaction with unique reference_id."
           },
@@ -2743,8 +3239,16 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "{{accountId}}",
+                "transactions"
+              ]
             },
             "description": "Retries transaction with identical reference_id. Must return 409 Conflict without duplicate ledger record."
           },
