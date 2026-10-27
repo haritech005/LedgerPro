@@ -10,6 +10,11 @@
       "key": "baseUrl",
       "value": "http://localhost:3000",
       "type": "string"
+    },
+    {
+      "key": "accountId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -48,6 +53,263 @@
                   "    pm.expect(jsonData.services).to.be.an(\"object\");",
                   "    pm.expect(jsonData.services.database.status).to.eql(\"connected\");",
                   "    pm.expect(jsonData.services.database.latencyMs).to.be.a(\"number\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Create Account - Valid Name",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Creates a new account with a system-generated ID and an initial balance of zero."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Account has system-generated ID and zero balance\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.be.a(\"string\");",
+                  "    pm.expect(jsonData.name).to.eql(\"John Doe\");",
+                  "    pm.expect(jsonData.balance).to.eql(\"0.00\");",
+                  "    pm.expect(jsonData.created_at).to.be.a(\"string\");",
+                  "    pm.collectionVariables.set(\"accountId\", jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Missing Name (Validation Error)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Verifies that account creation is rejected when name is omitted."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is VALIDATION_ERROR\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Whitespace-only Name (Validation Error)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"    \"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Verifies that whitespace-only names are rejected."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error indicates whitespace is disallowed\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Client Nonzero Balance (Rejected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"balance\": 1000.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Ensures clients cannot override or set the initial balance."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates initial balance cannot be provided\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "    pm.expect(jsonData.error.message).to.include(\"Initial balance cannot be provided\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Client Controlled Timestamp (Rejected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"created_at\": \"2020-01-01T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Ensures clients cannot provide system-controlled creation timestamps."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message indicates creation timestamp is system-generated\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "    pm.expect(jsonData.error.message).to.include(\"system-generated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Verify Initial Zero Balance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zero Balance Account\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Verifies that newly created accounts always have a balance of exactly 0.00."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Balance is exactly 0.00\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.balance).to.eql(\"0.00\");",
                   "});"
                 ],
                 "type": "text/javascript"

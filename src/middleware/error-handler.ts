@@ -30,15 +30,21 @@ export function errorHandler(
       ? 'An unexpected internal server error occurred.'
       : err.message || 'An error occurred processing the request.';
 
-  // In development, log the error internally without exposing credentials or internal traces to client
-  if (process.env.NODE_ENV !== 'test') {
-    console.error('Unhandled Error:', err);
+  // Log unexpected internal errors (500) without exposing credentials to client
+  if (statusCode >= 500 && process.env.NODE_ENV !== 'test') {
+    console.error('Unhandled Server Error:', err);
   }
 
-  res.status(statusCode).json({
+  const responseBody: any = {
     error: {
       code: errorCode,
       message,
     },
-  });
+  };
+
+  if (err.details !== undefined) {
+    responseBody.error.details = err.details;
+  }
+
+  res.status(statusCode).json(responseBody);
 }
