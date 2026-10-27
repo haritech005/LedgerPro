@@ -265,6 +265,55 @@ If a financial correction is necessary, it must be performed using a compensatin
 
 ---
 
+### 2.7 Money Transfer (Bonus Feature)
+**POST** `/api/v1/transfers`
+
+Executes an atomic money transfer between two existing accounts within a single database transaction. Debits the source account and credits the destination account for the exact same amount.
+
+#### Concurrency & Deadlock Avoidance
+- **Lexicographical Lock Ordering:** When locking both accounts, row-level locks (`SELECT ... FOR UPDATE`) are acquired in deterministic alphabetical order based on their UUIDs. This completely eliminates deadlock risk during simultaneous bidirectional transfers (e.g., A transferring to B while B transfers to A).
+- **Single Database Transaction:** Debit, credit, balance updates, and transfer records are bound to one transaction. If any failure occurs, the entire operation rolls back. Partial transfers are mathematically impossible.
+
+#### Reference Mapping
+To maintain transaction history traceability:
+- **Transfer Reference:** The client-supplied `reference_id` must be globally unique across all transfers (`uq_transfers_reference_id`).
+- **Source Debit Transaction:** Recorded in `transactions` with reference `transfer:<reference_id>:debit`.
+- **Destination Credit Transaction:** Recorded in `transactions` with reference `transfer:<reference_id>:credit`.
+
+#### Request Body
+```json
+{
+  "source_account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+  "destination_account_id": "8c59f071-8bc1-443b-8524-747d3d2be352",
+  "amount": "150.00",
+  "reference_id": "XFER-2026-10-01",
+  "description": "Monthly office rent share"
+}
+```
+
+#### Response (201 Created)
+```json
+{
+  "id": "e8d6728e-f513-40e9-b5f7-64047a06a251",
+  "source_account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+  "destination_account_id": "8c59f071-8bc1-443b-8524-747d3d2be352",
+  "amount": "150.00",
+  "reference_id": "XFER-2026-10-01",
+  "description": "Monthly office rent share",
+  "debit_transaction_id": "44a7fe2b-7088-4f21-ab38-48fb8c1267e4",
+  "credit_transaction_id": "2a39b1b6-25a4-40d0-9c64-c46db12a684f",
+  "created_at": "2026-10-27T14:30:00.000Z"
+}
+```
+
+#### Error Scenarios:
+- **400 Bad Request:** Source and destination IDs are identical (`Source and destination accounts must be different.`).
+- **404 Not Found:** Either source or destination account does not exist.
+- **409 Conflict:** Transfer `reference_id` has already been processed.
+- **422 Unprocessable Content:** Source account has insufficient funds.
+
+---
+
 ## 3. Standard HTTP Status Codes
 
 | Code | Meaning | When Used |

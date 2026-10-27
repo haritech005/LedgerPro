@@ -63,7 +63,7 @@ describe('Data Integrity, Immutability, and Atomicity (Phase 7)', () => {
 
     it('should strictly prohibit direct SQL TRUNCATE on transactions table', async () => {
       await expect(
-        pool.query('TRUNCATE transactions;')
+        pool.query('TRUNCATE transactions CASCADE;')
       ).rejects.toThrow(/Transaction records are immutable: TRUNCATE operations are strictly prohibited/i);
     });
 

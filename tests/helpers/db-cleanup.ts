@@ -15,6 +15,10 @@ export async function cleanupTestAccounts(
   try {
     await client.query("SET ledgerpro.allow_test_cleanup = 'true'");
     await client.query(
+      'DELETE FROM transfers WHERE source_account_id = ANY($1::uuid[]) OR destination_account_id = ANY($1::uuid[]);',
+      [validIds]
+    );
+    await client.query(
       'DELETE FROM transactions WHERE account_id = ANY($1::uuid[]);',
       [validIds]
     );
