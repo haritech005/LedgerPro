@@ -28,6 +28,17 @@ export class AccountService {
     }
     return account;
   }
+
+  /**
+   * Retrieves the current balance for an existing account.
+   */
+  async getAccountBalance(id: string): Promise<{ account_id: string; balance: string }> {
+    const account = await this.getAccountById(id);
+    return {
+      account_id: account.id,
+      balance: account.balance,
+    };
+  }
 }
 
 export const accountService = new AccountService();

@@ -13,3 +13,17 @@ export async function createAccount(
     next(error);
   }
 }
+
+export async function getAccountBalance(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const accountId = req.params.accountId as string;
+    const balanceData = await accountService.getAccountBalance(accountId);
+    res.status(200).json(balanceData);
+  } catch (error) {
+    next(error);
+  }
+}

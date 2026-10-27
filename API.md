@@ -148,6 +148,44 @@ Executes a credit or debit operation atomically, updates account balance, and ap
 
 ---
 
+### 2.4 Retrieve Account Balance
+**GET** `/api/v1/accounts/:accountId/balance`
+
+Retrieves the current balance for an existing account.
+
+#### URL Parameters
+- `:accountId`: Valid UUID of the target account.
+
+#### Response (200 OK)
+```json
+{
+  "account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+  "balance": "350.00"
+}
+```
+
+#### Not Found Response (404 Not Found)
+```json
+{
+  "error": {
+    "code": "ACCOUNT_NOT_FOUND",
+    "message": "Account with ID '00000000-0000-0000-0000-000000000000' was not found."
+  }
+}
+```
+
+#### Invalid Parameter Response (400 Bad Request)
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid account ID format. Must be a valid UUID."
+  }
+}
+```
+
+---
+
 ## 3. Standard HTTP Status Codes
 
 | Code | Meaning | When Used |
