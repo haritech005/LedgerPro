@@ -351,7 +351,12 @@ All incoming requests are validated strictly before executing any database opera
 | `page` | Query (`/transactions`) | Optional positive integer (`>= 1`), defaults to `1`. Non-numeric, non-integer, zero, or negative values rejected. |
 | `limit` | Query (`/transactions`) | Optional positive integer (`1` to `100`), defaults to `10`. Values exceeding 100 rejected. |
 | `type` | Query (`/transactions`) | Optional string filter, strictly `'credit'` or `'debit'`. Returns both if omitted. |
-| *query params* | Query (`/accounts`, `/balance`) | Strictly no query parameters allowed. Any unrecognized query parameter returns 400 Bad Request. |
+| `source_account_id` | Body (`/transfers`) | Required UUID v4 of source account. Must differ from `destination_account_id`. |
+| `destination_account_id` | Body (`/transfers`) | Required UUID v4 of destination account. Must differ from `source_account_id`. |
+| `amount` | Body (`/transfers`) | Required positive monetary amount, max 2 decimals, max 1,000,000,000.00. |
+| `reference_id` | Body (`/transfers`) | Required globally unique string, 1 to 255 characters. |
+| `description` | Body (`/transfers`) | Required string, 1 to 500 characters. |
+| *query params* | Query (`/accounts`, `/balance`, `/transfers`) | Strictly no query parameters allowed. Any unrecognized query parameter returns 400 Bad Request. |
 
 ---
 

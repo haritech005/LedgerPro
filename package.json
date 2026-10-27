@@ -9,7 +9,8 @@
     "start": "node dist/src/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "migrate": "tsx database/migrations/runner.ts"
+    "migrate": "tsx database/migrations/runner.ts",
+    "seed": "tsx database/seeds/runner.ts"
   },
   "keywords": [
     "ledger",
