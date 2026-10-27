@@ -22,3 +22,24 @@ export function validateBody(schema: ZodTypeAny) {
     next();
   };
 }
+
+export function validateParams(schema: ZodTypeAny) {
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    const result = schema.safeParse(req.params);
+
+    if (!result.success) {
+      const error: ZodError = result.error;
+      const firstIssue = error.issues[0];
+      const message = firstIssue?.message || 'Invalid URL parameters';
+      const details = error.issues.map((issue) => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+      }));
+
+      return next(new AppError(400, 'VALIDATION_ERROR', message, details));
+    }
+
+    req.params = result.data as any;
+    next();
+  };
+}

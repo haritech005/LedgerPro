@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import healthRoutes from './health.routes';
 import accountRoutes from './account.routes';
+import transactionRoutes from './transaction.routes';
 
 const router = Router();
 
@@ -9,5 +10,8 @@ router.use('/', healthRoutes);
 
 // Phase 2: Account management endpoints
 router.use('/', accountRoutes);
+
+// Phase 3: Transaction management endpoints
+router.use('/', transactionRoutes);
 
 export default router;
