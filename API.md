@@ -242,6 +242,29 @@ Retrieves a paginated list of financial ledger transactions for an account, sort
 
 ---
 
+### 2.6 Ledger Immutability & Prohibited Methods
+**PUT / PATCH / DELETE** `/api/v1/accounts/:accountId/transactions`
+**PUT / PATCH / DELETE** `/api/v1/accounts/:accountId/transactions/:transactionId`
+
+Financial records in LedgerPro are strictly immutable. Once created, a transaction cannot be edited, updated, or deleted through the API or via direct database queries.
+
+If a financial correction is necessary, it must be performed using a compensating transaction (e.g., crediting to offset an accidental debit, or debiting to offset an accidental credit) rather than altering historical entries.
+
+#### Headers Returned
+- `Allow`: `GET, POST`
+
+#### Response (405 Method Not Allowed)
+```json
+{
+  "error": {
+    "code": "METHOD_NOT_ALLOWED",
+    "message": "Transaction records are immutable. Modifying or deleting transactions is strictly prohibited."
+  }
+}
+```
+
+---
+
 ## 3. Standard HTTP Status Codes
 
 | Code | Meaning | When Used |
@@ -250,6 +273,7 @@ Retrieves a paginated list of financial ledger transactions for an account, sort
 | `201 Created` | Resource created | Successful account or transaction creation |
 | `400 Bad Request` | Validation failure | Missing fields, negative amounts, precision > 2 decimals, invalid types |
 | `404 Not Found` | Resource not found | Nonexistent account ID |
+| `405 Method Not Allowed` | Method not allowed | Attempts to mutate or delete immutable ledger records (`PUT`, `DELETE`, `PATCH`) |
 | `409 Conflict` | Business conflict | Duplicate `reference_id` submission for the same account |
 | `422 Unprocessable` | Business rule failure | Insufficient balance on debit |
 | `500 Internal Error` | Server error | Unexpected database or internal failure |

@@ -109,7 +109,11 @@ export class TransactionService {
 
       return transaction;
     } catch (error: any) {
-      await client.query('ROLLBACK');
+      try {
+        await client.query('ROLLBACK');
+      } catch {
+        // Suppress rollback errors to preserve original exception
+      }
 
       // Check for PostgreSQL unique constraint violation on (account_id, reference_id)
       // This protects against concurrent race conditions where two requests arrive simultaneously

@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../../src/app';
-import { pool, closeDatabasePool } from '../../src/config/database';
+import { closeDatabasePool } from '../../src/config/database';
+import { cleanupTestAccounts } from '../helpers/db-cleanup';
 
 describe('Transaction History, Filtering, Pagination, and Sorting (Phase 6)', () => {
   let testAccountId: string;
@@ -38,16 +39,7 @@ describe('Transaction History, Filtering, Pagination, and Sorting (Phase 6)', ()
   });
 
   afterAll(async () => {
-    if (testAccountId || emptyAccountId) {
-      await pool.query('DELETE FROM transactions WHERE account_id IN ($1, $2);', [
-        testAccountId,
-        emptyAccountId,
-      ]);
-      await pool.query('DELETE FROM accounts WHERE id IN ($1, $2);', [
-        testAccountId,
-        emptyAccountId,
-      ]);
-    }
+    await cleanupTestAccounts([testAccountId, emptyAccountId]);
     await closeDatabasePool();
   });
 

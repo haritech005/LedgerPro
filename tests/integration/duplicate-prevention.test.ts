@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../../src/app';
 import { pool, closeDatabasePool } from '../../src/config/database';
+import { cleanupTestAccounts } from '../helpers/db-cleanup';
 
 describe('Duplicate Transaction Prevention and Idempotency (Phase 4)', () => {
   let primaryAccountId: string;
@@ -20,16 +21,7 @@ describe('Duplicate Transaction Prevention and Idempotency (Phase 4)', () => {
   });
 
   afterAll(async () => {
-    if (primaryAccountId || secondaryAccountId) {
-      await pool.query('DELETE FROM transactions WHERE account_id IN ($1, $2);', [
-        primaryAccountId,
-        secondaryAccountId,
-      ]);
-      await pool.query('DELETE FROM accounts WHERE id IN ($1, $2);', [
-        primaryAccountId,
-        secondaryAccountId,
-      ]);
-    }
+    await cleanupTestAccounts([primaryAccountId, secondaryAccountId]);
     await closeDatabasePool();
   });
 

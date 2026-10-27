@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../../src/app';
-import { pool, closeDatabasePool } from '../../src/config/database';
+import { closeDatabasePool } from '../../src/config/database';
+import { cleanupTestAccounts } from '../helpers/db-cleanup';
 
 describe('Account Balance API (Phase 5)', () => {
   let testAccountId: string;
@@ -14,12 +15,7 @@ describe('Account Balance API (Phase 5)', () => {
   });
 
   afterAll(async () => {
-    if (testAccountId) {
-      await pool.query('DELETE FROM transactions WHERE account_id = $1;', [
-        testAccountId,
-      ]);
-      await pool.query('DELETE FROM accounts WHERE id = $1;', [testAccountId]);
-    }
+    await cleanupTestAccounts([testAccountId]);
     await closeDatabasePool();
   });
 

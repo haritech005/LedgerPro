@@ -2,6 +2,7 @@ import { describe, it, expect, afterAll, beforeAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../../src/app';
 import { pool, closeDatabasePool } from '../../src/config/database';
+import { cleanupTestAccounts } from '../helpers/db-cleanup';
 
 describe('Credit and Debit Transactions (Phase 3)', () => {
   let testAccountId: string;
@@ -22,16 +23,7 @@ describe('Credit and Debit Transactions (Phase 3)', () => {
 
   afterAll(async () => {
     // Cleanup created test records
-    if (testAccountId || secondaryAccountId) {
-      await pool.query('DELETE FROM transactions WHERE account_id IN ($1, $2);', [
-        testAccountId,
-        secondaryAccountId,
-      ]);
-      await pool.query('DELETE FROM accounts WHERE id IN ($1, $2);', [
-        testAccountId,
-        secondaryAccountId,
-      ]);
-    }
+    await cleanupTestAccounts([testAccountId, secondaryAccountId]);
     await closeDatabasePool();
   });
 
