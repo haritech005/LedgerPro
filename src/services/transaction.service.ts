@@ -7,7 +7,12 @@ import {
   PaginatedTransactions,
   TransactionHistoryQuery,
 } from '../types/transaction.types';
-import { AppError } from '../errors/app-error';
+import {
+  AccountNotFoundError,
+  DuplicateTransactionError,
+  InsufficientBalanceError,
+  ValidationError,
+} from '../errors/app-error';
 import { toCents, fromCents } from '../utils/money';
 
 export class TransactionService {
@@ -31,18 +36,13 @@ export class TransactionService {
     );
 
     if (existing) {
-      throw new AppError(
-        409,
-        'DUPLICATE_TRANSACTION_REFERENCE',
-        `A transaction with reference ID '${dto.reference_id}' has already been processed for this account.`,
-        {
-          reference_id: dto.reference_id,
-          existing_transaction_id: existing.id,
-          type: existing.type,
-          amount: existing.amount,
-          created_at: existing.created_at,
-        }
-      );
+      throw new DuplicateTransactionError(dto.reference_id, {
+        reference_id: dto.reference_id,
+        existing_transaction_id: existing.id,
+        type: existing.type,
+        amount: existing.amount,
+        created_at: existing.created_at,
+      });
     }
 
     const client = await pool.connect();
@@ -53,11 +53,7 @@ export class TransactionService {
       // 2. Safely lock and fetch account state using SELECT ... FOR UPDATE
       const account = await this.accountRepo.findByIdForUpdate(accountId, client);
       if (!account) {
-        throw new AppError(
-          404,
-          'ACCOUNT_NOT_FOUND',
-          `Account with ID '${accountId}' was not found.`
-        );
+        throw new AccountNotFoundError(accountId);
       }
 
       // 3. Perform exact currency arithmetic using BigInt cents
@@ -70,17 +66,11 @@ export class TransactionService {
         newBalanceCents = currentBalanceCents + amountCents;
       } else if (dto.type === 'debit') {
         if (currentBalanceCents < amountCents) {
-          throw new AppError(
-            422,
-            'INSUFFICIENT_BALANCE',
-            'The account does not have sufficient funds.'
-          );
+          throw new InsufficientBalanceError();
         }
         newBalanceCents = currentBalanceCents - amountCents;
       } else {
-        throw new AppError(
-          400,
-          'INVALID_TRANSACTION_TYPE',
+        throw new ValidationError(
           "Invalid transaction type. Must be either 'credit' or 'debit'."
         );
       }
@@ -127,10 +117,8 @@ export class TransactionService {
           dto.reference_id
         );
 
-        throw new AppError(
-          409,
-          'DUPLICATE_TRANSACTION_REFERENCE',
-          `A transaction with reference ID '${dto.reference_id}' has already been processed for this account.`,
+        throw new DuplicateTransactionError(
+          dto.reference_id,
           existingTx
             ? {
                 reference_id: dto.reference_id,
@@ -159,11 +147,7 @@ export class TransactionService {
     // 1. Verify account exists
     const account = await this.accountRepo.findById(accountId);
     if (!account) {
-      throw new AppError(
-        404,
-        'ACCOUNT_NOT_FOUND',
-        `Account with ID '${accountId}' was not found.`
-      );
+      throw new AccountNotFoundError(accountId);
     }
 
     // 2. Fetch history and count

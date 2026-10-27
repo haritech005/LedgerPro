@@ -2096,6 +2096,202 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Phase 9 — Centralized Error Handling",
+      "item": [
+        {
+          "name": "1. Malformed JSON Body (400 INVALID_JSON)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Incomplete JSON"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Verifies that malformed JSON request bodies produce standardized 400 Bad Request with code 'INVALID_JSON'."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is INVALID_JSON\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"INVALID_JSON\");",
+                  "    pm.expect(jsonData.error.message).to.eql(\"Malformed JSON payload in request body.\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Unmapped Route (404 NOT_FOUND)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/nonexistent-route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "nonexistent-route"]
+            },
+            "description": "Verifies that nonexistent routes return 404 Not Found with code 'NOT_FOUND'."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is NOT_FOUND\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"NOT_FOUND\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Missing Resource (404 ACCOUNT_NOT_FOUND)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/00000000-0000-0000-0000-000000000000/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "00000000-0000-0000-0000-000000000000", "balance"]
+            },
+            "description": "Verifies that requesting a nonexistent account balance returns 404 with code 'ACCOUNT_NOT_FOUND'."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is ACCOUNT_NOT_FOUND\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"ACCOUNT_NOT_FOUND\");",
+                  "    pm.expect(jsonData.error.details.account_id).to.eql(\"00000000-0000-0000-0000-000000000000\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Duplicate Reference (409 DUPLICATE_TRANSACTION_REFERENCE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit\",\n  \"amount\": 100.00,\n  \"description\": \"Duplicate reference test\",\n  \"reference_id\": \"VAL-PREC-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Verifies that submitting a duplicate reference returns 409 Conflict with code 'DUPLICATE_TRANSACTION_REFERENCE'."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is DUPLICATE_TRANSACTION_REFERENCE\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"DUPLICATE_TRANSACTION_REFERENCE\");",
+                  "    pm.expect(jsonData.error.details.reference_id).to.eql(\"VAL-PREC-01\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Insufficient Funds (422 INSUFFICIENT_BALANCE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"debit\",\n  \"amount\": 99999999.00,\n  \"description\": \"Insufficient funds test\",\n  \"reference_id\": \"ERR-INSUFF-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Verifies that debits exceeding account balance return 422 with code 'INSUFFICIENT_BALANCE'."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422 Unprocessable Content\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is INSUFFICIENT_BALANCE\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"INSUFFICIENT_BALANCE\");",
+                  "    pm.expect(jsonData.error.message).to.eql(\"The account does not have sufficient funds.\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

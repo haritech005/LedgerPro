@@ -1,6 +1,6 @@
 import { accountRepository, AccountRepository } from '../repositories/account.repository';
 import { Account, CreateAccountDTO } from '../types/account.types';
-import { AppError } from '../errors/app-error';
+import { ValidationError, AccountNotFoundError } from '../errors/app-error';
 
 export class AccountService {
   constructor(private readonly accountRepo: AccountRepository = accountRepository) {}
@@ -12,7 +12,7 @@ export class AccountService {
     const trimmedName = dto.name?.trim();
 
     if (!trimmedName) {
-      throw new AppError(400, 'VALIDATION_ERROR', 'Account holder name is required and cannot be empty.');
+      throw new ValidationError('Account holder name is required and cannot be empty.');
     }
 
     return this.accountRepo.create(trimmedName);
@@ -24,7 +24,7 @@ export class AccountService {
   async getAccountById(id: string): Promise<Account> {
     const account = await this.accountRepo.findById(id);
     if (!account) {
-      throw new AppError(404, 'ACCOUNT_NOT_FOUND', `Account with ID '${id}' was not found.`);
+      throw new AccountNotFoundError(id);
     }
     return account;
   }

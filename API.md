@@ -303,3 +303,37 @@ All incoming requests are validated strictly before executing any database opera
 | `limit` | Query (`/transactions`) | Optional positive integer (`1` to `100`), defaults to `10`. Values exceeding 100 rejected. |
 | `type` | Query (`/transactions`) | Optional string filter, strictly `'credit'` or `'debit'`. Returns both if omitted. |
 | *query params* | Query (`/accounts`, `/balance`) | Strictly no query parameters allowed. Any unrecognized query parameter returns 400 Bad Request. |
+
+---
+
+## 5. Centralized Error Contract
+
+All error responses across every endpoint follow a standardized, predictable contract:
+
+```json
+{
+  "error": {
+    "code": "STRING_ERROR_CODE",
+    "message": "Human-readable description of the error.",
+    "details": {}
+  }
+}
+```
+
+### 5.1 Standard Error Catalog
+
+| Status Code | Error Code | Description / Trigger Scenario | Example Message |
+|---|---|---|---|
+| **400 Bad Request** | `INVALID_JSON` | Malformed JSON in request body | `"Malformed JSON payload in request body."` |
+| **400 Bad Request** | `VALIDATION_ERROR` | Schema failure, missing fields, wrong types, invalid limits, unexpected keys | `"Invalid account ID format. Must be a valid UUID."` |
+| **404 Not Found** | `ACCOUNT_NOT_FOUND` | Account does not exist for provided UUID | `"Account with ID '...' was not found."` |
+| **404 Not Found** | `NOT_FOUND` | Unmapped endpoint or route | `"Cannot GET /api/v1/..."` |
+| **405 Method Not Allowed** | `METHOD_NOT_ALLOWED` | Prohibited HTTP verb (`PUT`, `DELETE`, `PATCH`) on immutable records | `"Transaction records are immutable. Modifying or deleting transactions is strictly prohibited."` |
+| **409 Conflict** | `DUPLICATE_TRANSACTION_REFERENCE` | Reference ID already used for account | `"A transaction with reference ID '...' has already been processed for this account."` |
+| **422 Unprocessable** | `INSUFFICIENT_BALANCE` | Debit amount exceeds account balance | `"The account does not have sufficient funds."` |
+| **500 Internal Error** | `INTERNAL_SERVER_ERROR` | Unhandled runtime or database exception | `"An unexpected internal server error occurred."` |
+
+### 5.2 Information Security & Sanitization
+- **No SQL Leakage:** Raw PostgreSQL errors, SQLSTATE codes (e.g. `42P01`, `08006`), SQL queries, or table names are intercepted and mapped to `INTERNAL_SERVER_ERROR`.
+- **No Credential Exposure:** Database hostnames, ports, usernames, or connection parameters never appear in client responses.
+- **No Stack Traces:** Stack traces are logged server-side only in non-production environments and never delivered to API clients.
