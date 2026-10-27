@@ -15,6 +15,11 @@
       "key": "accountId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "secondaryAccountId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -66,7 +71,7 @@
       "name": "Accounts",
       "item": [
         {
-          "name": "Create Account - Valid Name",
+          "name": "Create Account - Valid Name (Primary)",
           "request": {
             "method": "POST",
             "header": [
@@ -84,7 +89,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "accounts"]
             },
-            "description": "Creates a new account with a system-generated ID and an initial balance of zero."
+            "description": "Creates a new primary account with a system-generated ID and an initial balance of zero."
           },
           "response": [],
           "event": [
@@ -103,6 +108,47 @@
                   "    pm.expect(jsonData.balance).to.eql(\"0.00\");",
                   "    pm.expect(jsonData.created_at).to.be.a(\"string\");",
                   "    pm.collectionVariables.set(\"accountId\", jsonData.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Account - Secondary Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Secondary Test Holder\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts"]
+            },
+            "description": "Creates a secondary account to test cross-account reference isolation."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Secondary account ID captured\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"secondaryAccountId\", jsonData.id);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -608,6 +654,220 @@
                   "pm.test(\"Error code is ACCOUNT_NOT_FOUND\", function () {",
                   "    var jsonData = pm.response.json();",
                   "    pm.expect(jsonData.error.code).to.eql(\"ACCOUNT_NOT_FOUND\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Duplicate Prevention",
+      "item": [
+        {
+          "name": "1. Submit Initial Credit (REF-DUP-1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit\",\n  \"amount\": 250.00,\n  \"description\": \"Initial credit for idempotency test\",\n  \"reference_id\": \"REF-POSTMAN-IDEMP-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "First submission of reference REF-POSTMAN-IDEMP-01. Expected to succeed."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Transaction processed successfully\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.reference_id).to.eql(\"REF-POSTMAN-IDEMP-01\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Resubmit Same Credit (REF-DUP-1) -> Expect 409 Conflict",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit\",\n  \"amount\": 250.00,\n  \"description\": \"Initial credit for idempotency test\",\n  \"reference_id\": \"REF-POSTMAN-IDEMP-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Resubmission of the exact same reference on the same account. Must be rejected with 409 Conflict without altering balance."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is DUPLICATE_TRANSACTION_REFERENCE\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"DUPLICATE_TRANSACTION_REFERENCE\");",
+                  "    pm.expect(jsonData.error.details.reference_id).to.eql(\"REF-POSTMAN-IDEMP-01\");",
+                  "    pm.expect(jsonData.error.details.existing_transaction_id).to.be.a(\"string\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Submit Same Reference (REF-DUP-1) on Secondary Account -> Expect 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"credit\",\n  \"amount\": 100.00,\n  \"description\": \"Cross-account reference test\",\n  \"reference_id\": \"REF-POSTMAN-IDEMP-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{secondaryAccountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{secondaryAccountId}}", "transactions"]
+            },
+            "description": "Submits REF-POSTMAN-IDEMP-01 to a DIFFERENT account. Must succeed because reference uniqueness is scoped per account."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Cross-account transaction succeeded\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.reference_id).to.eql(\"REF-POSTMAN-IDEMP-01\");",
+                  "    pm.expect(jsonData.account_id).to.eql(pm.collectionVariables.get(\"secondaryAccountId\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Submit Initial Debit (REF-DEB-DUP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"debit\",\n  \"amount\": 50.00,\n  \"description\": \"Debit idempotency test\",\n  \"reference_id\": \"REF-POSTMAN-DEB-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "First debit with reference REF-POSTMAN-DEB-01."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201 Created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Debit transaction recorded\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.type).to.eql(\"debit\");",
+                  "    pm.expect(jsonData.amount).to.eql(\"50.00\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Resubmit Same Debit (REF-DEB-DUP) -> Expect 409 Conflict",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"debit\",\n  \"amount\": 50.00,\n  \"description\": \"Debit idempotency test\",\n  \"reference_id\": \"REF-POSTMAN-DEB-01\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Repeated submission of debit request. Must return 409 Conflict and not subtract from balance a second time."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409 Conflict\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is DUPLICATE_TRANSACTION_REFERENCE\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"DUPLICATE_TRANSACTION_REFERENCE\");",
                   "});"
                 ],
                 "type": "text/javascript"

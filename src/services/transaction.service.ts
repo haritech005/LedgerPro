@@ -13,18 +13,39 @@ export class TransactionService {
 
   /**
    * Executes a credit or debit transaction atomically within a database transaction.
-   * Uses row-level locking on the account to prevent concurrent balance anomalies.
+   * Guarantees idempotency and duplicate prevention sequentially and under high concurrency.
    */
   async createTransaction(
     accountId: string,
     dto: CreateTransactionDTO
   ): Promise<Transaction> {
+    // 1. Fast pre-check: verify if reference already exists for this account
+    const existing = await this.transactionRepo.findByAccountAndReference(
+      accountId,
+      dto.reference_id
+    );
+
+    if (existing) {
+      throw new AppError(
+        409,
+        'DUPLICATE_TRANSACTION_REFERENCE',
+        `A transaction with reference ID '${dto.reference_id}' has already been processed for this account.`,
+        {
+          reference_id: dto.reference_id,
+          existing_transaction_id: existing.id,
+          type: existing.type,
+          amount: existing.amount,
+          created_at: existing.created_at,
+        }
+      );
+    }
+
     const client = await pool.connect();
 
     try {
       await client.query('BEGIN');
 
-      // 1. Safely lock and fetch account state using SELECT ... FOR UPDATE
+      // 2. Safely lock and fetch account state using SELECT ... FOR UPDATE
       const account = await this.accountRepo.findByIdForUpdate(accountId, client);
       if (!account) {
         throw new AppError(
@@ -34,7 +55,7 @@ export class TransactionService {
         );
       }
 
-      // 2. Perform exact currency arithmetic using BigInt cents
+      // 3. Perform exact currency arithmetic using BigInt cents
       const currentBalanceCents = toCents(account.balance);
       const amountCents = toCents(dto.amount);
 
@@ -59,7 +80,7 @@ export class TransactionService {
         );
       }
 
-      // 3. Create immutable transaction record
+      // 4. Create immutable transaction record
       const transaction = await this.transactionRepo.create(
         {
           account_id: accountId,
@@ -71,14 +92,14 @@ export class TransactionService {
         client
       );
 
-      // 4. Atomically update the account balance
+      // 5. Atomically update the account balance
       await this.accountRepo.updateBalance(
         accountId,
         fromCents(newBalanceCents),
         client
       );
 
-      // 5. Commit database transaction
+      // 6. Commit database transaction
       await client.query('COMMIT');
 
       return transaction;
@@ -86,15 +107,30 @@ export class TransactionService {
       await client.query('ROLLBACK');
 
       // Check for PostgreSQL unique constraint violation on (account_id, reference_id)
+      // This protects against concurrent race conditions where two requests arrive simultaneously
       if (
         error.code === '23505' &&
         (error.constraint === 'uq_transactions_account_reference' ||
           error.detail?.includes('reference_id'))
       ) {
+        const existingTx = await this.transactionRepo.findByAccountAndReference(
+          accountId,
+          dto.reference_id
+        );
+
         throw new AppError(
           409,
           'DUPLICATE_TRANSACTION_REFERENCE',
-          `A transaction with reference ID '${dto.reference_id}' already exists for this account.`
+          `A transaction with reference ID '${dto.reference_id}' has already been processed for this account.`,
+          existingTx
+            ? {
+                reference_id: dto.reference_id,
+                existing_transaction_id: existingTx.id,
+                type: existingTx.type,
+                amount: existingTx.amount,
+                created_at: existingTx.created_at,
+              }
+            : undefined
         );
       }
 
