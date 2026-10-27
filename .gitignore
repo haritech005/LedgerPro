@@ -1,0 +1,27 @@
+# Environment configuration
+.env
+.env.*
+!.env.example
+
+# Internal specifications and architecture documents
+prd.md
+PRD.md
+architecture.md
+Architecture.md
+
+# Dependencies & build outputs
+node_modules/
+dist/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
