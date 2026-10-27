@@ -22,6 +22,7 @@
 - [Running the Application](#running-the-application)
 - [Running Automated Tests](#running-automated-tests)
 - [API Overview](#api-overview)
+- [API Demo](#api-demo)
 - [Postman Collection](#postman-collection)
 - [Related Documentation](#related-documentation)
 
@@ -221,6 +222,15 @@ All endpoints are versioned under `/api/v1`. For detailed request/response schem
 | `GET` | `/api/v1/accounts/:accountId/balance` | Retrieve current settled account balance |
 | `GET` | `/api/v1/accounts/:accountId/transactions` | Query paginated transaction history with type filters |
 | `POST` | `/api/v1/transfers` | Atomic, deadlock-free money transfer between two accounts |
+
+---
+
+## API Demo
+
+Watch the Postman demonstration to see the API workflows, transaction processing, balance updates, validation, and error handling in action.
+
+- **Demo Video:** [https://drive.google.com/file/d/11e7wxnZC8U7JuT7EPR063dUf0JTuGFLH/view?usp=sharing](https://drive.google.com/file/d/11e7wxnZC8U7JuT7EPR063dUf0JTuGFLH/view?usp=sharing)
+- **Postman Collection:** [View the Collection](postman/ledgerpro.postman_collection.json)
 
 ---
 
