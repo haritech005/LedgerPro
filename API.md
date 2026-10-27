@@ -277,3 +277,29 @@ If a financial correction is necessary, it must be performed using a compensatin
 | `409 Conflict` | Business conflict | Duplicate `reference_id` submission for the same account |
 | `422 Unprocessable` | Business rule failure | Insufficient balance on debit |
 | `500 Internal Error` | Server error | Unexpected database or internal failure |
+
+---
+
+## 4. Comprehensive Validation & Field Constraints
+
+All incoming requests are validated strictly before executing any database operations. Invalid input returns HTTP `400 Bad Request` with structured error details.
+
+### 4.1 Request Payloads
+- **Object Enforcement:** All POST request bodies must be valid JSON objects. Sending primitives, numbers, booleans, or JSON arrays (`[]`) is rejected immediately.
+- **Server-Controlled Fields:** Clients cannot supply `id`, `balance`, `created_at`, or `account_id` in request bodies. Any attempt is rejected with a specific descriptive error.
+- **Extra Fields:** Requests containing unexpected/unrecognized fields are rejected with `Unrecognized field(s)`.
+
+### 4.2 Endpoint Field Rules
+
+| Field / Parameter | Location | Rules & Constraints |
+|---|---|---|
+| `:accountId` | URL Path | Required, standard 36-character hexadecimal UUID format. |
+| `name` | Body (`/accounts`) | Required, non-empty string, trimmed, 1 to 255 characters. Whitespace-only strings rejected. |
+| `type` | Body (`/transactions`) | Required string, strictly `'credit'` or `'debit'`. |
+| `amount` | Body (`/transactions`) | Required numeric or string, positive (`> 0`), at most 2 decimal places, maximum supported limit: `1,000,000,000.00`. |
+| `description` | Body (`/transactions`) | Required string, non-empty, trimmed, 1 to 500 characters. Whitespace-only strings rejected. |
+| `reference_id` | Body (`/transactions`) | Required string, non-empty, trimmed, 1 to 255 characters. Whitespace-only strings rejected. |
+| `page` | Query (`/transactions`) | Optional positive integer (`>= 1`), defaults to `1`. Non-numeric, non-integer, zero, or negative values rejected. |
+| `limit` | Query (`/transactions`) | Optional positive integer (`1` to `100`), defaults to `10`. Values exceeding 100 rejected. |
+| `type` | Query (`/transactions`) | Optional string filter, strictly `'credit'` or `'debit'`. Returns both if omitted. |
+| *query params* | Query (`/accounts`, `/balance`) | Strictly no query parameters allowed. Any unrecognized query parameter returns 400 Bad Request. |

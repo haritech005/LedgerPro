@@ -4,6 +4,17 @@ import { AppError } from '../errors/app-error';
 
 export function validateBody(schema: ZodTypeAny) {
   return (req: Request, _res: Response, next: NextFunction): void => {
+    // Ensure request body is a non-null, non-array object
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+      return next(
+        new AppError(
+          400,
+          'VALIDATION_ERROR',
+          'Request body must be a valid JSON object.'
+        )
+      );
+    }
+
     const result = schema.safeParse(req.body);
 
     if (!result.success) {

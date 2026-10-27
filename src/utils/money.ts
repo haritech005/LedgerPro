@@ -48,7 +48,10 @@ export function validateAmount(
   }
 
   if (num > MAX_SUPPORTED_AMOUNT) {
-    return { valid: false, error: `Amount cannot exceed ${MAX_SUPPORTED_AMOUNT.toLocaleString()}` };
+    return {
+      valid: false,
+      error: `Amount cannot exceed ${MAX_SUPPORTED_AMOUNT.toLocaleString('en-US')}`,
+    };
   }
 
   // Convert to exact 2-decimal string format

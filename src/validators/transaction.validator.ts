@@ -3,6 +3,8 @@ import { validateAmount } from '../utils/money';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+export const emptyQuerySchema = z.object({}).strict();
+
 export const accountParamSchema = z.object({
   accountId: z
     .string({
@@ -171,7 +173,11 @@ export const createTransactionSchema = z
 
 export const transactionHistoryQuerySchema = z
   .object({
-    type: z.enum(['credit', 'debit'] as const).optional(),
+    type: z
+      .enum(['credit', 'debit'] as const, {
+        message: "Invalid transaction type filter. Must be either 'credit' or 'debit'.",
+      })
+      .optional(),
     page: z.coerce
       .number({
         message: 'Page must be a valid positive integer',

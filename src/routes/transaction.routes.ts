@@ -11,6 +11,7 @@ import {
 import {
   accountParamSchema,
   createTransactionSchema,
+  emptyQuerySchema,
   transactionHistoryQuerySchema,
 } from '../validators/transaction.validator';
 
@@ -35,6 +36,7 @@ const rejectImmutableMutation = (_req: Request, res: Response): void => {
 router.post(
   '/accounts/:accountId/transactions',
   validateParams(accountParamSchema),
+  validateQuery(emptyQuerySchema),
   validateBody(createTransactionSchema),
   createTransaction
 );
