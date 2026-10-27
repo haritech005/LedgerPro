@@ -1,7 +1,12 @@
 import { pool } from '../config/database';
 import { accountRepository, AccountRepository } from '../repositories/account.repository';
 import { transactionRepository, TransactionRepository } from '../repositories/transaction.repository';
-import { Transaction, CreateTransactionDTO } from '../types/transaction.types';
+import {
+  Transaction,
+  CreateTransactionDTO,
+  PaginatedTransactions,
+  TransactionHistoryQuery,
+} from '../types/transaction.types';
 import { AppError } from '../errors/app-error';
 import { toCents, fromCents } from '../utils/money';
 
@@ -138,6 +143,41 @@ export class TransactionService {
     } finally {
       client.release();
     }
+  }
+
+  /**
+   * Retrieves paginated, sorted, and filtered transaction history for an account.
+   */
+  async getTransactionHistory(
+    accountId: string,
+    query: TransactionHistoryQuery
+  ): Promise<PaginatedTransactions> {
+    // 1. Verify account exists
+    const account = await this.accountRepo.findById(accountId);
+    if (!account) {
+      throw new AppError(
+        404,
+        'ACCOUNT_NOT_FOUND',
+        `Account with ID '${accountId}' was not found.`
+      );
+    }
+
+    // 2. Fetch history and count
+    const { transactions, total } = await this.transactionRepo.findHistory(
+      accountId,
+      query
+    );
+
+    const totalPages = total === 0 ? 0 : Math.ceil(total / query.limit);
+
+    return {
+      account_id: accountId,
+      page: query.page,
+      limit: query.limit,
+      total_records: total,
+      total_pages: totalPages,
+      data: transactions,
+    };
   }
 }
 

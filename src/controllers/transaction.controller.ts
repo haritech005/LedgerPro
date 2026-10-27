@@ -17,3 +17,21 @@ export async function createTransaction(
     next(error);
   }
 }
+
+export async function getTransactionHistory(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const accountId = req.params.accountId as string;
+    const query = ((req as any).validatedQuery || req.query) as any;
+    const history = await transactionService.getTransactionHistory(
+      accountId,
+      query
+    );
+    res.status(200).json(history);
+  } catch (error) {
+    next(error);
+  }
+}

@@ -168,3 +168,27 @@ export const createTransactionSchema = z
       reference_id: (data.reference_id as string).trim(),
     };
   });
+
+export const transactionHistoryQuerySchema = z
+  .object({
+    type: z.enum(['credit', 'debit'] as const).optional(),
+    page: z.coerce
+      .number({
+        message: 'Page must be a valid positive integer',
+      })
+      .int('Page must be an integer')
+      .positive('Page must be greater than zero')
+      .default(1),
+    limit: z.coerce
+      .number({
+        message: 'Limit must be a valid positive integer',
+      })
+      .int('Limit must be an integer')
+      .positive('Limit must be greater than zero')
+      .max(100, 'Limit cannot exceed maximum of 100 records per page')
+      .default(10),
+  })
+  .strict();
+
+export type TransactionHistoryQueryInput = z.infer<typeof transactionHistoryQuerySchema>;
+

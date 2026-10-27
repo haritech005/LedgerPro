@@ -79,6 +79,79 @@ export class TransactionRepository {
       created_at: new Date(row.created_at).toISOString(),
     };
   }
+
+  /**
+   * Retrieves paginated transaction history with optional type filter.
+   * Uses latest-first ordering by created_at DESC with deterministic secondary sort by id DESC.
+   */
+  async findHistory(
+    accountId: string,
+    options: { type?: TransactionType; page: number; limit: number },
+    client?: PoolClient
+  ): Promise<{ transactions: Transaction[]; total: number }> {
+    const { type, page, limit } = options;
+    const offset = (page - 1) * limit;
+
+    // Build parameterized count and select queries
+    const countConditions: string[] = ['account_id = $1'];
+    const countParams: any[] = [accountId];
+
+    if (type) {
+      countConditions.push('type = $2');
+      countParams.push(type);
+    }
+
+    const countSql = `
+      SELECT COUNT(*) AS total
+      FROM transactions
+      WHERE ${countConditions.join(' AND ')};
+    `;
+
+    const countResult = client
+      ? await client.query(countSql, countParams)
+      : await query(countSql, countParams);
+
+    const total = parseInt(countResult.rows[0].total, 10);
+
+    if (total === 0) {
+      return { transactions: [], total: 0 };
+    }
+
+    const selectConditions: string[] = ['account_id = $1'];
+    const selectParams: any[] = [accountId];
+
+    if (type) {
+      selectConditions.push('type = $2');
+      selectParams.push(type);
+    }
+
+    const nextParamIndex = selectParams.length + 1;
+    selectParams.push(limit, offset);
+
+    const selectSql = `
+      SELECT id, account_id, type, amount, description, reference_id, created_at
+      FROM transactions
+      WHERE ${selectConditions.join(' AND ')}
+      ORDER BY created_at DESC, id DESC
+      LIMIT $${nextParamIndex} OFFSET $${nextParamIndex + 1};
+    `;
+
+    const selectResult = client
+      ? await client.query(selectSql, selectParams)
+      : await query(selectSql, selectParams);
+
+    const transactions: Transaction[] = selectResult.rows.map((row) => ({
+      id: row.id,
+      account_id: row.account_id,
+      type: row.type as TransactionType,
+      amount: parseFloat(row.amount).toFixed(2),
+      description: row.description,
+      reference_id: row.reference_id,
+      created_at: new Date(row.created_at).toISOString(),
+    }));
+
+    return { transactions, total };
+  }
 }
 
 export const transactionRepository = new TransactionRepository();

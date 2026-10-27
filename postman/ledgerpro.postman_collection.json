@@ -1083,6 +1083,368 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Transaction History",
+      "item": [
+        {
+          "name": "1. Retrieve All Transactions (Default Pagination)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Retrieves the complete transaction history for an account using default pagination (page 1, limit 10)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Pagination metadata is present\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.page).to.eql(1);",
+                  "    pm.expect(jsonData.limit).to.eql(10);",
+                  "    pm.expect(jsonData.total_records).to.be.a(\"number\");",
+                  "    pm.expect(jsonData.total_pages).to.be.a(\"number\");",
+                  "    pm.expect(Array.isArray(jsonData.data)).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Filter Credits Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=credit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "credit"
+                }
+              ]
+            },
+            "description": "Filters transaction history to only return credit operations."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"All returned transactions are credits\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.data.forEach(function(tx) {",
+                  "        pm.expect(tx.type).to.eql(\"credit\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Filter Debits Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=debit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "debit"
+                }
+              ]
+            },
+            "description": "Filters transaction history to only return debit operations."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"All returned transactions are debits\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.data.forEach(function(tx) {",
+                  "        pm.expect(tx.type).to.eql(\"debit\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Paginate Transactions (Page 1, Limit 2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=1&limit=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Retrieves the first page with a page limit of 2 records."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Page limit 2 respected\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.page).to.eql(1);",
+                  "    pm.expect(jsonData.limit).to.eql(2);",
+                  "    pm.expect(jsonData.data.length).to.be.at.most(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Paginate Transactions (Page 2, Limit 2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=2&limit=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Retrieves the second page of records."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Current page is 2\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.page).to.eql(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Empty Page (Out of Range)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=999&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "999"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Requests an out-of-range page number and expects an empty data array."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Data array is empty\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.eql([]);",
+                  "    pm.expect(jsonData.page).to.eql(999);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Reject Invalid Pagination (Page 0) -> 400 Bad Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?page=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Ensures page number 0 is rejected with a validation error."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error code is VALIDATION_ERROR\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Reject Invalid Type Filter -> 400 Bad Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions?type=deposit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "deposit"
+                }
+              ]
+            },
+            "description": "Ensures invalid transaction type filter values are rejected."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error indicates invalid option\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error.code).to.eql(\"VALIDATION_ERROR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Verify Latest-First Sorting",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "accounts", "{{accountId}}", "transactions"]
+            },
+            "description": "Confirms that transactions are returned in latest-first descending order."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Transactions ordered latest first\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    for (var i = 0; i < jsonData.data.length - 1; i++) {",
+                  "        var t1 = new Date(jsonData.data[i].created_at).getTime();",
+                  "        var t2 = new Date(jsonData.data[i+1].created_at).getTime();",
+                  "        pm.expect(t1).to.be.at.least(t2);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,9 +1,17 @@
 import { Router } from 'express';
-import { createTransaction } from '../controllers/transaction.controller';
-import { validateBody, validateParams } from '../middleware/validate-request';
+import {
+  createTransaction,
+  getTransactionHistory,
+} from '../controllers/transaction.controller';
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from '../middleware/validate-request';
 import {
   accountParamSchema,
   createTransactionSchema,
+  transactionHistoryQuerySchema,
 } from '../validators/transaction.validator';
 
 const router = Router();
@@ -14,6 +22,14 @@ router.post(
   validateParams(accountParamSchema),
   validateBody(createTransactionSchema),
   createTransaction
+);
+
+// GET /api/v1/accounts/:accountId/transactions - Retrieve paginated transaction history
+router.get(
+  '/accounts/:accountId/transactions',
+  validateParams(accountParamSchema),
+  validateQuery(transactionHistoryQuerySchema),
+  getTransactionHistory
 );
 
 export default router;

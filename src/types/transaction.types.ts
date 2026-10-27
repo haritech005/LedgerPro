@@ -16,3 +16,18 @@ export interface CreateTransactionDTO {
   description: string;
   reference_id: string;
 }
+
+export interface TransactionHistoryQuery {
+  type?: TransactionType;
+  page: number;
+  limit: number;
+}
+
+export interface PaginatedTransactions {
+  account_id: string;
+  page: number;
+  limit: number;
+  total_records: number;
+  total_pages: number;
+  data: Transaction[];
+}

@@ -43,3 +43,25 @@ export function validateParams(schema: ZodTypeAny) {
     next();
   };
 }
+
+export function validateQuery(schema: ZodTypeAny) {
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    const result = schema.safeParse(req.query);
+
+    if (!result.success) {
+      const error: ZodError = result.error;
+      const firstIssue = error.issues[0];
+      const message = firstIssue?.message || 'Invalid query parameters';
+      const details = error.issues.map((issue) => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+      }));
+
+      return next(new AppError(400, 'VALIDATION_ERROR', message, details));
+    }
+
+    // Attach parsed and coerced query data to req without modifying read-only req.query getter
+    (req as any).validatedQuery = result.data;
+    next();
+  };
+}

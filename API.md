@@ -186,6 +186,62 @@ Retrieves the current balance for an existing account.
 
 ---
 
+### 2.5 Retrieve Transaction History
+**GET** `/api/v1/accounts/:accountId/transactions`
+
+Retrieves a paginated list of financial ledger transactions for an account, sorted latest-first.
+
+#### URL Parameters
+- `:accountId`: Valid UUID of the target account.
+
+#### Query Parameters
+- `type` *(optional)*: Filter by transaction type (`credit` or `debit`). Returns both if omitted.
+- `page` *(optional)*: Page number, positive integer >= 1. Default: `1`.
+- `limit` *(optional)*: Number of records per page, positive integer between 1 and 100. Default: `10`.
+
+#### Response (200 OK)
+```json
+{
+  "account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+  "page": 1,
+  "limit": 10,
+  "total_records": 5,
+  "total_pages": 1,
+  "data": [
+    {
+      "id": "2a39b1b6-25a4-40d0-9c64-c46db12a684f",
+      "account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+      "type": "credit",
+      "amount": "300.00",
+      "description": "Tx 5 Credit",
+      "reference_id": "HIST-SEED-05",
+      "created_at": "2026-10-27T13:30:00.000Z"
+    },
+    {
+      "id": "44a7fe2b-7088-4f21-ab38-48fb8c1267e4",
+      "account_id": "3bf60359-cbc5-4366-bcf3-ed9752f437c9",
+      "type": "debit",
+      "amount": "30.00",
+      "description": "Tx 4 Debit",
+      "reference_id": "HIST-SEED-04",
+      "created_at": "2026-10-27T13:25:00.000Z"
+    }
+  ]
+}
+```
+
+#### Invalid Query Parameter Response (400 Bad Request)
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Limit cannot exceed maximum of 100 records per page"
+  }
+}
+```
+
+---
+
 ## 3. Standard HTTP Status Codes
 
 | Code | Meaning | When Used |
